@@ -19,6 +19,7 @@ import { diskStorage } from 'multer';
 import { extname } from 'path';
 import * as fs from 'fs';
 import { ApiFile } from './api-file.decorators';
+import { ApiMultiFile } from './api-multifile.decorators';
 
 // Check file type
 const imageFileFilter = (req, file, callback) => {
@@ -71,7 +72,10 @@ export class AppController {
       fileFilter: imageFileFilter,
     }),
   )
-  async uploadedFile(@UploadedFile() file, @Body() registerData: any) {
+  async uploadedFile(
+    @UploadedFile() file: Express.Multer.File,
+    @Body() registerData: any,
+  ) {
     const response = {
       originalname: file.originalname,
       filename: file.filename,
@@ -85,9 +89,11 @@ export class AppController {
     return response;
   }
 
+  // Mult file upload
   @Post('multiple')
   @ApiConsumes('multipart/form-data')
-  @ApiFile()
+  @ApiMultiFile()
+
   // @ApiBody({
   //   schema: {
   //     type: 'object',
@@ -102,7 +108,7 @@ export class AppController {
   //   },
   // })
   @UseInterceptors(
-    FilesInterceptor('file', 20, {
+    FilesInterceptor('choose_files', 20, {
       storage: diskStorage({
         destination: destination,
         filename: editFileName,
@@ -110,7 +116,10 @@ export class AppController {
       fileFilter: imageFileFilter,
     }),
   )
-  async uploadMultipleFiles(@UploadedFiles() files, @Body() registerData: any) {
+  async uploadMultipleFiles(
+    @UploadedFiles() files: Array<Express.Multer.File>,
+    @Body() registerData: any,
+  ) {
     const response = [];
     const files_name: any[] = [];
     files.forEach((file) => {
@@ -154,4 +163,12 @@ export class AppController {
       throw error.response;
     }
   }
+
+  // @Post('/upload')
+  // @ApiConsumes('multipart/form-data')
+  // @ApiMultiFile()
+  // @UseInterceptors(FilesInterceptor('files'))
+  // uploadsMultipleFiles(@UploadedFiles() files: Array<Express.Multer.File>) {
+  //   console.log(files);
+  // }
 }

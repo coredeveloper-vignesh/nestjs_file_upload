@@ -3,11 +3,14 @@
 ## Basic Installation
 
 ```bash
-# swagger
+#swagger
 $ npm install --save @nestjs/swagger swagger-ui-express
 
 #typeOrm
 $ npm install --save @nestjs/typeorm typeorm@0.2 mysql2
+
+#multer
+$ npm i -D @types/multer
 
 ```
 
